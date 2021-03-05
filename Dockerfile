@@ -48,13 +48,9 @@ RUN yes | ./rti_connext_dds-6.0.1-eval-x64Linux3gcc5.4.0.run && \
 ENV CONNEXTDDS_DIR $NDDSHOME
 ENV PATH "$NDDSHOME/bin":$PATH
 ENV LD_LIBRARY_PATH "$NDDSHOME/lib/x64Linux3gcc5.4.0":$LD_LIBRARY_PATH
-# Install RTI-provided OpenSSL
-RUN rtipkginstall -u openssl-1.1.1d-6.0.1-host-x64Linux.rtipkg
-RUN rtipkginstall -u rti_security_plugins-6.0.1-host-x64Linux.rtipkg
-RUN rtipkginstall -u rti_security_plugins-6.0.1-target-x64Linux3gcc5.4.0.rtipkg
 # set RTI openssl environment
-ENV PATH "$NDDSHOME/resource/app/lib/x64Linux2.6gcc4.4.5":$PATH
-ENV LD_LIBRARY_PATH "$NDDSHOME/resource/app/lib/x64Linux2.6gcc4.4.5":$LD_LIBRARY_PATH
+ENV PATH "$NDDSHOME/third_party/openssl-1.1.1d/x64Linux4gcc7.3.0/release/bin":$PATH
+ENV LD_LIBRARY_PATH "$NDDSHOME/third_party/openssl-1.1.1d/x64Linux4gcc7.3.0/release/lib":$LD_LIBRARY_PATH
 
 # install overlay dependencies
 ARG OVERLAY_WS
