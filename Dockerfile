@@ -8,7 +8,7 @@ FROM $FROM_IMAGE AS cacher
 ARG OVERLAY_WS
 WORKDIR $OVERLAY_WS
 COPY ./overlay ./
-RUN vcs import src < overlay.repos &&           \
+RUN vcs import src < overlay.repos && \
     find src -name ".git" | xargs rm -rf || true
 
 # copy manifests for caching
@@ -70,7 +70,7 @@ COPY --from=cacher $OVERLAY_WS/src ./src
 ARG OVERLAY_MIXINS="release ccache"
 RUN . /opt/ros/$ROS_DISTRO/setup.sh && \
     colcon build \
-      --symlink-install  \
+      --symlink-install \
       --mixin $OVERLAY_MIXINS
 
 # # install RTI Connext
@@ -117,13 +117,3 @@ RUN sed --in-place \
 
 ENV TURTLEBOT3_MODEL='burger' \
     GAZEBO_MODEL_PATH=$OVERLAY_WS/install/turtlebot3_gazebo/share/turtlebot3_gazebo/models:$GAZEBO_MODEL_PATH
-
-# Copy files to debug bt_navigator
-WORKDIR /opt/ros
-COPY rti/debug/navigation_launch_no_bt.py ./foxy/share/nav2_bringup/launch/
-RUN mv ./foxy/share/nav2_bringup/launch/navigation_launch_no_bt.py \
-       ./foxy/share/nav2_bringup/launch/navigation_launch.py
-COPY rti/debug/bt.yml .
-COPY rti/debug/lf.yml .
-RUN apt-get update && \
-    apt-get install -y gdb valgrind
