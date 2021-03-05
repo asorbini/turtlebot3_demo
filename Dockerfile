@@ -78,6 +78,14 @@ ENV LD_LIBRARY_PATH "$NDDSHOME/lib/x64Linux3gcc5.4.0":$LD_LIBRARY_PATH
 WORKDIR $NDDSHOME
 # ADD https://s3.amazonaws.com/RTI/Bundles/5.3.1/Evaluation/rti_connext_dds_secure-5.3.1-eval-x64Linux3gcc5.4.0.tar.gz ./
 # RUN tar -xvf rti_connext_dds_secure-5.3.1-eval-x64Linux3gcc5.4.0.tar.gz -C ./
+# COPY ./rti ./
+# RUN rtipkginstall rti_security_plugins-5.3.1-eval-x64Linux3gcc5.4.0.rtipkg && \
+#     rtipkginstall openssl-1.0.2n-5.3.1-host-x64Linux.rtipkg && \
+#     tar -xvf openssl-1.0.2n-target-x64Linux3gcc5.4.0.tar.gz
+# ENV PATH "$NDDSHOME/openssl-1.0.2n/x64Linux3gcc5.4.0/release/bin":$PATH
+# ENV LD_LIBRARY_PATH "$NDDSHOME/openssl-1.0.2n/x64Linux3gcc5.4.0/release/lib":$LD_LIBRARY_PATH
+# install RTI QoS
+# ENV NDDS_QOS_PROFILES "$NDDSHOME/NDDS_QOS_PROFILES.xml"
 
 ARG OVERLAY_WS
 WORKDIR $OVERLAY_WS
@@ -112,13 +120,3 @@ RUN sed --in-place \
 
 ENV TURTLEBOT3_MODEL='burger' \
     GAZEBO_MODEL_PATH=$OVERLAY_WS/install/turtlebot3_gazebo/share/turtlebot3_gazebo/models:$GAZEBO_MODEL_PATH
-
-# Copy files to debug bt_navigator
-WORKDIR /opt/ros
-COPY rti/debug/navigation_launch_no_bt.py ./foxy/share/nav2_bringup/launch/
-RUN mv ./foxy/share/nav2_bringup/launch/navigation_launch_no_bt.py \
-       ./foxy/share/nav2_bringup/launch/navigation_launch.py
-COPY rti/debug/bt.yml .
-COPY rti/debug/lf.yml .
-RUN apt-get update && \
-    apt-get install -y gdb valgrind
